@@ -1,11 +1,11 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Security.Claims;
-using System.Collections.Generic;
 
 namespace aad_alt_exp.UserVariableTokenCache
 {
@@ -39,6 +39,10 @@ namespace aad_alt_exp.UserVariableTokenCache
             var app = ConfidentialClientApplicationBuilder
                 .Create(_config.ClientId)
                 .WithRedirectUri(_config.RedirectUri)
+                // form post causes issues with the cookie container from the original request
+                // we could work around this with an anonymous landing page to receive the auth_code
+                // then redirect to the /aad/authorizeend endpoint
+                // or we could just stuff the auth_code in the querystring. QS for now. 
                 //.WithExtraQueryParameters(new Dictionary<string, string>() { { "response_mode", "form_post" } })
                 ;
 

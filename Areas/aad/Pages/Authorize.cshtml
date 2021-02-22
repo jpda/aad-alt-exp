@@ -6,18 +6,52 @@
 <h1>@ViewData["Title"]</h1>
 
 <div>
-    @if (Model.Accounts.Any())
-    {
-        <table>
-            @foreach (var a in Model.Accounts)
+    <h2>Logged in user</h2>
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in User.Claims)
             {
                 <tr>
-                    <td>@a.Environment</td>
-                    <td>@a.HomeAccountId</td>
-                    <td>@a.Username</td>
+                    <td>@c.Type</td>
+                    <td>@c.Value</td>
                 </tr>
             }
+        </tbody>
+    </table>
+</div>
+<div>
+    @if (Model.Accounts.Any())
+    {
+        <h2>Authorized Azure AD directories</h2>
+        <h3>Token cache contents</h3>
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th>environment</th>
+                    <th>home account id</th>
+                    <th>username</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model.Accounts)
+                {
+                    <tr>
+                        <td>@a.Environment</td>
+                        <td>@a.HomeAccountId</td>
+                        <td>@a.Username</td>
+                    </tr>
+                }
+            </tbody>
         </table>
+        <div>
+            <a href='@Model.AuthorizationRedirectUrl.ToString()'>Authorize another directory</a>
+        </div>
     }
     else
     {

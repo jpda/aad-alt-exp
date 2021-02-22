@@ -40,26 +40,15 @@ namespace aad_alt_exp
             });
 
             // we have two options for UX for user authorization:
-            // cache the user's AAD tokens, which requires reliably and securely knowing who they are (B2C object <--> AAD object map)
+            // cache the user's AAD tokens, which requires reliably and securely knowing who they are (the object id of the B2C user is immutable, for example)
             // but results in a better user experience - no re-authentication between sign-in sessions
-            // alternatively, you could ask the user to sign-in to AAD once during each session, which removes the mapping and caching requirement
-            // this sample will use once-per-session authorization for simplicity, but will incorporate persistent cache in the future
+            // alternatively, you could cache in session or another short-lived 
+            // this sample uses a per-user cache using Azure Table Storage - see PerUserTableTokenCacheAccessor.cs
+            // rather than building an entire msal token cache, we merely hook into the persistence layer and handle
+            // writing and reading the serialized bits - msal handles everything else. 
+            // to use your own storage provider, implement ITokenCacheAccessor
 
             var aadConfig = Configuration.GetSection("AzureAdAuthorization");
-
-            // services.AddScoped<Microsoft.Identity.Client.IConfidentialClientApplication>(x =>
-            // {
-
-            //     // we use a new MSAL instance here for handling the user's AAD authorization
-            //     var cca = ConfidentialClientApplicationBuilder.Create(aadConfig["ClientId"])
-            //                 .WithClientSecret(aadConfig["ClientSecret"])
-            //                 .WithRedirectUri(aadConfig["RedirectUri"])
-            //                 .WithExtraQueryParameters(new Dictionary<string, string>() { { "response_mode", "form_post" } })
-            //                 .Build()
-            //                 ;
-
-            //     return cca;
-            // });
 
             services.AddSingleton<CloudTable>(x =>
             {
