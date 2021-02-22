@@ -1,0 +1,77 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "ALT-AAD";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Alternate admin experiences for Azure AD</h1>
+    <p>This app collects a variety of alternative administrative experiences for Azure AD. Specifically, app
+        registration (for the purposes of proxy) and conditional access policy authoring.</p>
+</div>
+<div>
+    <p>A few notes:</p>
+    <h2>User sign-in</h2>
+    <p>We are not opinionated here; your users can sign-in to the admin portal however they would like.
+        This sample uses Azure AD B2C, but you are free to use whatever system meets your business requirements for user
+        sign-in.
+        There are some optimizations for using Azure AD to sign-in; notably that your users will not need to
+        re-authenticate (provided they have the correct permission).A
+        B2C also offers unique ways of passing through upstream access_tokens if your user signs-in with Azure AD as a
+        B2C identity provider.
+    </p>
+
+    <h2>User authorization</h2>
+    <p>
+        To keep user sign-in separate from authorization, this sample will keep those concepts separate. We will have
+        other samples to explore options with AAD or B2C as an identity provider.
+        When the user is ready to authorize the application to do work on their behalf (e.g., register applications,
+        create conditional access policies, etc), the user will sign-in separately;
+        the token cache for that user specifically will need to be handled outside of the 'signed-in user' context since
+        the user may have signed-in via different means. This sample uses a simple
+        memory cache, but a variety of cache options exist.
+    </p>
+    <h2>Required authorization </h2>
+    <p>
+        As this app will make changes to the user's Azure AD directory, some permissions may be elevated.
+        All permissions follow least-privilege-required, unless specifically called out.
+        Some directories will have different policies applied, so users in those directories
+        may require additional permissions. This is outlined in //todo: tbd.
+    </p>
+    <h3>App registration & management permissions</h3>
+    <ul>
+        <li>
+            <em>
+                <b>Application.Read.All</b>
+            </em>- used to list applications (e.g., searching directory for existing apps)
+        </li>
+        <li>
+            <em>
+                <b>Application.ReadWrite.All</b>
+            </em>- used to create new applications, set application passwords (e.g., string
+            client secrets)
+        </li>
+        <li>[OPTIONAL] <em>
+                <b>Application.ReadWrite.All</b>
+            </em> and <em><b>Directory.Read.All</b></em>- for setting application
+            owners, if required (<em><b>Directory.Read.All</b></em> is high-privilege).</li>
+    </ul>
+    <h3>Conditional access policy management permissions</h3>
+    <ul>
+        <li>
+            <em>
+                <b>Policy.Read.All</b>
+            </em>- used to list conditional access policies
+        </li>
+        <li>
+            <em>
+                <b>Policy.ReadWrite.ConditionalAccess</b>
+            </em>-used to create and update conditional access policies
+        </li>
+        <li>
+            <em>
+                <b>Application.Read.All</b>
+            </em>- used for assigning CA policies to applications
+        </li>
+    </ul>
+</div>

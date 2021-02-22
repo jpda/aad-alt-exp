@@ -1,0 +1,28 @@
+@page
+@model aad_alt_exp.Areas.aad.Pages.AuthorizeModel
+@{
+    ViewData["Title"] = "Authorize Azure AD";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    @if (Model.Accounts.Any())
+    {
+        <table>
+            @foreach (var a in Model.Accounts)
+            {
+                <tr>
+                    <td>@a.Environment</td>
+                    <td>@a.HomeAccountId</td>
+                    <td>@a.Username</td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <div>
+            <a href='@Model.AuthorizationRedirectUrl.ToString()'>Sign in with work or school</a>
+        </div>
+    }
+</div>

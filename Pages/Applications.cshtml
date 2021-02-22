@@ -1,0 +1,26 @@
+@page
+@model ApplicationsModel
+@{
+    ViewData["Title"] = "Applications";
+}
+<h1>@ViewData["Title"]</h1>
+
+<code>@Model.Token</code>
+
+<table>
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in this.Model.UserClaims)
+        {
+            <tr>
+                <td>@c.Type</td>
+                <td>@c.Value</td>
+            </tr>
+        }
+    </tbody>
+</table>
