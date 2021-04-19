@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using aad_alt_exp.UserVariableTokenCache;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -34,7 +35,20 @@ namespace aad_alt_exp.Areas.aad.Pages
         {
             _logger.LogInformation($"received authorization code, session {session_state}, redeeming...");
             var msal = _msal.CreateForIdentifier(User);
-            await msal.AcquireTokenByAuthorizationCode(new[] { "Application.ReadWrite.All", "Policy.Read.All", "Policy.ReadWrite.ConditionalAccess" }, code).ExecuteAsync();
+            try
+            {
+                _logger.LogWarning("redeeming code with aad...");
+                await msal.AcquireTokenByAuthorizationCode(new[] { "Application.ReadWrite.All", "Policy.Read.All", "Policy.ReadWrite.ConditionalAccess" }, code).ExecuteAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                _logger.LogWarning("redeeming code with aad china...");
+                var cnMsal = _msal.CreateForIdentifier(User, true);
+                // api mismatch - azure cn doesn't include CA policy so maybe this is a wasted effort
+                await cnMsal.AcquireTokenByAuthorizationCode(new[] { "User.Read" }, code).ExecuteAsync();
+            }
+
             Response.Redirect("/aad/authorize");
         }
     }

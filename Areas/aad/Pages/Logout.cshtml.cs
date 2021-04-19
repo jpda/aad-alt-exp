@@ -21,6 +21,7 @@ namespace aad_alt_exp.Areas.aad.Pages
 
         public async Task OnGet(string account)
         {
+            _logger.LogTrace($"Logout requested for {account}");
             var client = _msal.CreateForIdentifier(User);
             IAccount accountToRemove;
 
@@ -33,6 +34,7 @@ namespace aad_alt_exp.Areas.aad.Pages
                 accountToRemove = (await client.GetAccountsAsync()).FirstOrDefault();
             }
 
+            _logger.LogInformation($"Logging out {accountToRemove.HomeAccountId.Identifier}");
             await client.RemoveAsync(accountToRemove);
             Response.Redirect("/aad/authorize");
         }

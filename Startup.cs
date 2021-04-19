@@ -33,16 +33,16 @@ namespace aad_alt_exp
             services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAdB2C"))
                 .EnableTokenAcquisitionToCallDownstreamApi(new[] { Configuration.GetValue<string>("AzureAdB2C:InitialScopes") })
-                 // cache here doesn't really matter since we're not accessing B2C APIs
-                 // if you are accessing your own backend APIs to make your app work, you'll want to use a persistent cache
-                 // preferably one that implements IDistributedCache and is registered in the container
+                // cache here doesn't really matter since we're not accessing B2C APIs
+                // if you are accessing your own backend APIs to make your app work, you'll want to use a persistent cache
+                // preferably one that implements IDistributedCache and is registered in the container
                 .AddInMemoryTokenCaches()
                 ;
 
             // used to force authorization_code flow on sign-in, no hybrid flow 'ere
             services.Configure<MicrosoftIdentityOptions>(opts =>
             {
-                // hybrid flow is a lie - turn that off and force authorization_code
+                // hybrid flow is a lie - turn that ish off and force authorization_code
                 opts.ResponseType = "code";
             });
 
@@ -56,6 +56,7 @@ namespace aad_alt_exp
             // to use your own storage provider, implement ITokenCacheAccessor
 
             var aadConfig = Configuration.GetSection("AzureAdAuthorization");
+            var aadChinaConfig = Configuration.GetSection("AzureAdChinaAuthorization");
 
             services.AddSingleton<CloudTable>(x =>
             {
@@ -65,11 +66,20 @@ namespace aad_alt_exp
                 return table;
             });
 
-            services.Configure<MsalOptions>(x =>
+            services.Configure<MsalOptions>("Commercial", x =>
             {
+                x.Instance = aadConfig["Instance"];
                 x.ClientId = aadConfig["ClientId"];
                 x.ClientSecret = aadConfig["ClientSecret"];
                 x.RedirectUri = aadConfig["RedirectUri"];
+            });
+
+            services.Configure<MsalOptions>("China", x =>
+            {
+                x.Instance = aadChinaConfig["Instance"];
+                x.ClientId = aadChinaConfig["ClientId"];
+                x.ClientSecret = aadChinaConfig["ClientSecret"];
+                x.RedirectUri = aadChinaConfig["RedirectUri"];
             });
 
             services.AddTransient<ITokenCacheAccessor, PerUserTableTokenCacheAccessor>();
@@ -84,7 +94,7 @@ namespace aad_alt_exp
                 opts.Conventions.AllowAnonymousToPage("/Index");
             })
             .AddMicrosoftIdentityUI();
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

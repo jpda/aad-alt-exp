@@ -13,6 +13,7 @@ namespace aad_alt_exp.Areas.aad.Pages
     public class AuthorizeModel : PageModel
     {
         public System.Uri AuthorizationRedirectUrl;
+        public System.Uri ChinaAuthorizationRedirectUrl;
         public List<IAccount> Accounts;
 
         private readonly ILogger<AuthorizeModel> _logger;
@@ -27,9 +28,13 @@ namespace aad_alt_exp.Areas.aad.Pages
         public async Task OnGet()
         {
             var msal = _msal.CreateForIdentifier(User);
+            var msalCn = _msal.CreateForIdentifier(User, true);
             this.AuthorizationRedirectUrl = await msal.GetAuthorizationRequestUrl(new[] { "Application.ReadWrite.All", "Policy.Read.All", "Policy.ReadWrite.ConditionalAccess" }).ExecuteAsync();
+            this.ChinaAuthorizationRedirectUrl = await msalCn.GetAuthorizationRequestUrl(new[] { "User.Read" }).ExecuteAsync();
             var accounts = await msal.GetAccountsAsync();
+            var cnAccounts = await msalCn.GetAccountsAsync();
             Accounts = accounts.ToList();
+            Accounts.AddRange(cnAccounts);
         }
     }
 }

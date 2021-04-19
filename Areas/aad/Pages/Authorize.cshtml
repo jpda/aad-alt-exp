@@ -46,19 +46,24 @@
                         <td>@a.Environment</td>
                         <td>@a.HomeAccountId</td>
                         <td>@a.Username</td>
-                        <td><a asp-area="aad" asp-page="logout" asp-route-account="@a.HomeAccountId" href="logout/@a.HomeAccountId.Identifier">signout</a></td>
+                        <td><a asp-area="aad" asp-page="logout" asp-route-account="@a.HomeAccountId"
+                        href="logout/@a.HomeAccountId.Identifier">signout</a></td>
                     </tr>
                 }
             </tbody>
         </table>
         <div>
             <a href='@Model.AuthorizationRedirectUrl.ToString()'>Authorize another directory</a>
+            |
+            <a href='@Model.ChinaAuthorizationRedirectUrl.ToString()'>Authorize an Azure China directory</a>
         </div>
     }
     else
     {
         <div>
             <a href='@Model.AuthorizationRedirectUrl.ToString()'>Sign in with work or school</a>
+            |
+            <a href='@Model.ChinaAuthorizationRedirectUrl.ToString()'>Authorize an Azure China directory</a>
         </div>
     }
 </div>

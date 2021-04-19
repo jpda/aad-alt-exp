@@ -3,6 +3,7 @@ namespace aad_alt_exp.UserVariableTokenCache
 {
     public class MsalOptions
     {
+        public string Instance { get; set; }
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
         public string RedirectUri { get; set; }
