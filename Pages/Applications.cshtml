@@ -15,7 +15,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var c in this.Model.UserClaims)
+        @foreach (var c in this.Model.UserClaims == null ? new List<DisplayClaim>() : this.Model.UserClaims)
         {
             <tr>
                 <td>@c.Type</td>

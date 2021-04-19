@@ -16,7 +16,8 @@ namespace aad_alt_exp.Pages
         public string Token;
 
         private readonly ILogger<ClaimsModel> _logger;
-        private MsalClientFactory _msal;
+        private readonly MsalClientFactory _msal;
+        private readonly List<string> _appScopes = new() { "Application.ReadWrite.All", "Policy.Read.All", "Policy.ReadWrite.ConditionalAccess" };
 
         public ApplicationsModel(ILogger<ClaimsModel> logger, MsalClientFactory msal)
         {
@@ -26,9 +27,15 @@ namespace aad_alt_exp.Pages
 
         public async Task OnGet()
         {
+            _logger.LogDebug($"Getting Graph token for {User.DeriveUserIdentifier()} for scopes {_appScopes}");
             var msal = _msal.CreateForIdentifier(User);
-            var token = await msal.AcquireTokenSilent(new[] { "Application.ReadWrite.All", "Policy.Read.All", "Policy.ReadWrite.ConditionalAccess" }, (await msal.GetAccountsAsync()).First()).ExecuteAsync();
+            var token = await msal.AcquireTokenSilent(_appScopes, (await msal.GetAccountsAsync()).First()).ExecuteAsync();
             Token = token.AccessToken;
+        }
+
+        private async Task GetApplications()
+        {
+            
         }
     }
 }
