@@ -84,6 +84,7 @@ namespace aad_alt_exp
                 opts.Conventions.AllowAnonymousToPage("/Index");
             })
             .AddMicrosoftIdentityUI();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

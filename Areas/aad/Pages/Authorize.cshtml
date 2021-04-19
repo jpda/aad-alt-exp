@@ -36,6 +36,7 @@
                     <th>environment</th>
                     <th>home account id</th>
                     <th>username</th>
+                    <th>signout</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,6 +46,7 @@
                         <td>@a.Environment</td>
                         <td>@a.HomeAccountId</td>
                         <td>@a.Username</td>
+                        <td><a asp-area="aad" asp-page="logout" asp-route-account="@a.HomeAccountId" href="logout/@a.HomeAccountId.Identifier">signout</a></td>
                     </tr>
                 }
             </tbody>

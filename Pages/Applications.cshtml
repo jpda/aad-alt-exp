@@ -5,21 +5,29 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<code>@Model.Token</code>
+<code>@Model.ErrorText</code>
 
-<table>
+<table class="table table-sm table-responsive table-striped">
     <thead>
         <tr>
-            <th>Type</th>
-            <th>Value</th>
+            <th>ID</th>
+            <th>App ID</th>
+            <th>Name</th>
+            <th>Created</th>
+            <th>Web Redirects</th>
+            <th>SPA Urls</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var c in this.Model.UserClaims == null ? new List<DisplayClaim>() : this.Model.UserClaims)
+        @foreach (var c in this.Model.Applications)
         {
             <tr>
-                <td>@c.Type</td>
-                <td>@c.Value</td>
+                <td>@c.Id</td>
+                <td>@c.AppId</td>
+                <td>@c.DisplayName</td>
+                <td>@c.Created</td>
+                <td>@(string.Join("\r\n", c.WebPlatform.RedirectUris))</td>
+                <td>//todo</td>
             </tr>
         }
     </tbody>
